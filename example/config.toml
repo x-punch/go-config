@@ -1,0 +1,13 @@
+timeout = "5h"
+
+[shopping]
+discount = 0.80
+discount_time = 2019-05-27T07:32:00Z
+
+[net]
+host = "host.com"
+port = 999
+nodes = [ 3, 5, 7]
+    [net.log]
+    enable = false
+    level = ["debug", "warn"]
