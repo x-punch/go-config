@@ -60,11 +60,12 @@ func env() {
 }
 
 func options() {
+	os.Setenv("CONFIG_FILES", "example/config.toml")
 	os.Setenv("GO_NET_PORT", "1809")
 	os.Setenv("GO_SHOPPING_DISCOUNT", "0.75")
 	os.Setenv("GO_SHOPPING_DISCOUNT_TIME", "1979-05-27T07:32:00Z")
 	os.Setenv("GO_TIMEOUT", "2h3m4s")
-	configor := config.NewConfigor(config.Files([]string{"example/config.toml"}), config.ShowLog(false), config.Prefix("GO"))
+	configor := config.NewConfigor(config.Files([]string{"example.toml"}), config.ShowLog(false), config.Prefix("GO"))
 	var cfg Config
 	if err := configor.Load(&cfg); err != nil {
 		panic(err)

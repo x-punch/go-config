@@ -36,9 +36,9 @@ func (c *Configor) Load(config interface{}) error {
 		if _, err := toml.DecodeFile(file, config); err != nil {
 			return fmt.Errorf("Failed to decode %s: %+v", file, err)
 		}
-		if err := c.ApplyEnvOverrides(c.Options.Prefix, config); err != nil {
-			return fmt.Errorf("Failed to apply env args: %+v", err)
-		}
+	}
+	if err := c.ApplyEnvOverrides(c.Options.Prefix, config); err != nil {
+		return fmt.Errorf("Failed to apply env args: %+v", err)
 	}
 	if c.Options.ShowLog {
 		fmt.Printf("[Config]Loaded:  %+v\n", config)
