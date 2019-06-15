@@ -21,7 +21,7 @@ func NewConfigor(opts ...Option) *Configor {
 	if prefix := os.Getenv("CONFIG_PREFIX"); prefix != "" {
 		opts = append(opts, Prefix(prefix))
 	}
-	if showLog := os.Getenv("CONFIG_SHOW_LOG"); showLog != "" {
+	if showLog := os.Getenv("CONFIG_SHOW_LOG"); showLog != "ture" {
 		opts = append(opts, ShowLog(true))
 	}
 	return &Configor{Options: newOptions(opts...)}
