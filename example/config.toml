@@ -11,3 +11,6 @@ nodes = [ 3, 5, 7]
     [net.log]
     enable = false
     level = ["debug", "warn"]
+        [[net.log.tags]]
+        name = "a"
+        version = "1.2.0"

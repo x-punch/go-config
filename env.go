@@ -79,6 +79,17 @@ func (c *Configor) applyEnvOverrides(prefix string, spec reflect.Value, structKe
 		}
 		element.SetFloat(floatValue)
 	case reflect.Slice:
+		if len, err := strconv.Atoi(os.Getenv(fmt.Sprintf("%s_LEN", prefix))); err == nil && len > 0 {
+			t := reflect.MakeSlice(reflect.SliceOf(element.Type().Elem()), len, len)
+			for i := 0; i < len; i++ {
+				f := t.Index(i)
+				if err := c.applyEnvOverrides(fmt.Sprintf("%s_%d", prefix, i), f, structKey); err != nil {
+					return err
+				}
+			}
+			element.Set(t)
+			break
+		}
 		// If the type is s slice, apply to each using the index as a suffix, e.g. GRAPHITE_0, GRAPHITE_0_TEMPLATES_0 or GRAPHITE_0_TEMPLATES="item1,item2"
 		for j := 0; j < element.Len(); j++ {
 			f := element.Index(j)
