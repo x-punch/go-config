@@ -136,6 +136,9 @@ func (c *Configor) applyEnvOverrides(prefix string, spec reflect.Value, structKe
 				continue
 			}
 
+			// except tag options, like omitempty or omitzero
+			configName = strings.Split(configName, ",")[0]
+
 			// Replace hyphens with underscores to avoid issues with shells
 			configName = strings.Replace(configName, "-", "_", -1)
 
