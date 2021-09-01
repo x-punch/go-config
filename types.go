@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"math"
-	"os/user"
 	"strconv"
 	"time"
 	"unicode"
@@ -117,28 +116,4 @@ func (m FileMode) MarshalText() (text []byte, err error) {
 		return []byte(fmt.Sprintf("%04o", m)), nil
 	}
 	return nil, nil
-}
-
-// Group represents gourp
-type Group int
-
-// UnmarshalTOML parses toml data to group
-func (g *Group) UnmarshalTOML(data interface{}) error {
-	if grpName, ok := data.(string); ok {
-		group, err := user.LookupGroup(grpName)
-		if err != nil {
-			return err
-		}
-
-		gid, err := strconv.Atoi(group.Gid)
-		if err != nil {
-			return err
-		}
-		*g = Group(gid)
-		return nil
-	} else if gid, ok := data.(int64); ok {
-		*g = Group(gid)
-		return nil
-	}
-	return errors.New("group must be a name (string) or id (int)")
 }

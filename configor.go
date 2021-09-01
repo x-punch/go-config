@@ -30,19 +30,19 @@ func NewConfigor(opts ...Option) *Configor {
 // Load will unmarshal configurations to struct from files that you provide
 func (c *Configor) Load(config interface{}) error {
 	for _, file := range c.getConfigFiles(c.Options.Files...) {
-		if c.Options.ShowLog {
-			fmt.Printf("[Config]Decode file: %s\n", file)
-		}
+		c.Log("[Config]Decode file: %s\n", file)
 		if _, err := toml.DecodeFile(file, config); err != nil {
-			return fmt.Errorf("Failed to decode %s: %+v", file, err)
+			return fmt.Errorf("failed to decode %s: %v", file, err)
 		}
 	}
-	if err := c.ApplyEnvOverrides(c.Options.Prefix, config); err != nil {
-		return fmt.Errorf("Failed to apply env args: %+v", err)
+	if c.Options.LoadFromEnv {
+		c.Log("[Config]Load from env with prefix %s\n", c.Options.Prefix)
+		if err := c.ApplyEnvOverrides(c.Options.Prefix, config); err != nil {
+			c.Log("[Config]Failed to parse env args: %v\n", err)
+			return fmt.Errorf("failed to apply env args: %v", err)
+		}
 	}
-	if c.Options.ShowLog {
-		fmt.Printf("[Config]Loaded:  %+v\n", config)
-	}
+	c.Log("[Config]Loaded:  %+v\n", config)
 	return nil
 }
 
@@ -50,15 +50,17 @@ func (c *Configor) getConfigFiles(files ...string) []string {
 	var validFiles []string
 	for _, file := range files {
 		if _, err := os.Stat(file); err != nil {
-			if c.Options.ShowLog {
-				fmt.Printf("[Config]File not found: %s\n", file)
-			}
+			c.Log("[Config]File not found: %s\n", file)
 		} else {
-			if c.Options.ShowLog {
-				fmt.Printf("[Config]Found file: %s\n", file)
-			}
+			c.Log("[Config]Found file: %s\n", file)
 			validFiles = append(validFiles, file)
 		}
 	}
 	return validFiles
+}
+
+func (c *Configor) Log(format string, a ...interface{}) {
+	if c.Options.ShowLog {
+		fmt.Printf(format, a...)
+	}
 }

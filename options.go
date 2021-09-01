@@ -2,9 +2,10 @@ package config
 
 // Options represents options of configor
 type Options struct {
-	Files   []string
-	Prefix  string
-	ShowLog bool
+	Files       []string
+	Prefix      string
+	ShowLog     bool
+	LoadFromEnv bool
 }
 
 // Option represents func to set options
@@ -13,7 +14,7 @@ type Option func(*Options)
 // Files represents configuration files path
 func Files(files []string) Option {
 	return func(o *Options) {
-		o.Files = files
+		o.Files = append(o.Files, files...)
 	}
 }
 
@@ -31,8 +32,15 @@ func ShowLog(show bool) Option {
 	}
 }
 
+// LoadFromEnv represents wether load configuration from env args
+func LoadFromEnv(load bool) Option {
+	return func(o *Options) {
+		o.LoadFromEnv = load
+	}
+}
+
 func newOptions(options ...Option) *Options {
-	opts := &Options{}
+	opts := &Options{LoadFromEnv: true}
 	for _, option := range options {
 		option(opts)
 	}

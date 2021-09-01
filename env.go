@@ -16,9 +16,9 @@ func (c *Configor) ApplyEnvOverrides(prefix string, val interface{}) error {
 
 func (c *Configor) applyEnvOverrides(prefix string, spec reflect.Value, structKey string) error {
 	element := spec
-	value := os.Getenv(prefix)
-	if c.Options.ShowLog && len(value) != 0 {
-		fmt.Printf("[Config]Loading env %v for field %v\n", prefix, structKey)
+	value, found := os.LookupEnv(prefix)
+	if found {
+		c.Log("[Config]Loading env %v for field %v\n", prefix, structKey)
 	}
 	// If spec is a named type and is addressable,
 	// check the address to see if it implements encoding.TextUnmarshaler.
@@ -48,7 +48,7 @@ func (c *Configor) applyEnvOverrides(prefix string, spec reflect.Value, structKe
 		}
 		intValue, err := strconv.ParseInt(value, 0, element.Type().Bits())
 		if err != nil {
-			return fmt.Errorf("Failed to apply %v to %v using type %v and value '%v': %s", prefix, structKey, element.Type().String(), value, err)
+			return fmt.Errorf("failed to apply %v to %v using type %v and value '%v': %s", prefix, structKey, element.Type().String(), value, err)
 		}
 		element.SetInt(intValue)
 	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
@@ -57,7 +57,7 @@ func (c *Configor) applyEnvOverrides(prefix string, spec reflect.Value, structKe
 		}
 		intValue, err := strconv.ParseUint(value, 0, element.Type().Bits())
 		if err != nil {
-			return fmt.Errorf("Failed to apply %v to %v using type %v and value '%v': %s", prefix, structKey, element.Type().String(), value, err)
+			return fmt.Errorf("failed to apply %v to %v using type %v and value '%v': %s", prefix, structKey, element.Type().String(), value, err)
 		}
 		element.SetUint(intValue)
 	case reflect.Bool:
