@@ -12,6 +12,11 @@ import (
 // Duration is a TOML wrapper type for time.Duration.
 type Duration time.Duration
 
+// Duration returns the time.Duration type.
+func (d Duration) Duration() time.Duration {
+	return time.Duration(d)
+}
+
 // String returns the string representation of the duration.
 func (d Duration) String() string {
 	return time.Duration(d).String()
